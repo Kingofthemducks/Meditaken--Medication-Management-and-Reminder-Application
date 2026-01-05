@@ -5,20 +5,26 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.laszlo.meditaken.ui.theme.MeditakenTheme
 
+private const val ENABLE_AUTO_LOGIN = false // 🔁 set true for final release
+
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sharedPrefs = getSharedPreferences("MeditakenPrefs", MODE_PRIVATE)
-        val isLoggedIn = sharedPrefs.getBoolean("isLoggedIn", false)
+        val prefs = getSharedPreferences("MeditakenPrefs", MODE_PRIVATE)
+
+        val startDestination = if (ENABLE_AUTO_LOGIN) {
+            val isLoggedIn = prefs.getBoolean("isLoggedIn", false)
+            if (isLoggedIn) "home" else "login"
+        } else {
+
+            "login"
+        }
 
         setContent {
             MeditakenTheme {
-                if (isLoggedIn) {
-                    NavGraph(startDestination = "home")
-                } else {
-                    NavGraph(startDestination = "login")
-                }
+                NavGraph(startDestination = startDestination)
             }
         }
     }

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "2.1.10"
 }
 
 android {
@@ -10,14 +11,16 @@ android {
         version = release(36)
     }
 
+
     defaultConfig {
         applicationId = "com.laszlo.meditaken"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+
     }
 
     buildTypes {
@@ -29,13 +32,16 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         compose = true
     }
@@ -51,8 +57,17 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.navigation.compose)
-    implementation(libs.androidx.compose.runtime)
-    implementation(libs.supabase)
+
+
+
+    implementation(platform("io.github.jan-tennert.supabase:bom:2.4.0"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.github.jan-tennert.supabase:gotrue-kt")
+    implementation("io.github.jan-tennert.supabase:storage-kt")
+    implementation("io.ktor:ktor-client-android:2.3.12")
+
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

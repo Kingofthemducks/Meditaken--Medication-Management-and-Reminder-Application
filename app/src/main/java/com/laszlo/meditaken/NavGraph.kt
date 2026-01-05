@@ -1,7 +1,6 @@
 package com.laszlo.meditaken
 
-import LoginScreen
-import SignUpScreen
+
 import androidx.compose.runtime.*
 import androidx.navigation.compose.*
 

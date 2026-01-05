@@ -1,57 +1,92 @@
+package com.laszlo.meditaken
+
 import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.laszlo.meditaken.ui.theme.MeditakenTheme
+import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.gotrue.providers.builtin.Email
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(navController: NavController) {
-    val context = LocalContext.current
-    val sharedPrefs = context.getSharedPreferences("MeditakenPrefs", Context.MODE_PRIVATE)
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(
-            text = "Sign Up",
-            style = MaterialTheme.typography.headlineSmall
+    val context = LocalContext.current
+    val prefs = context.getSharedPreferences("MeditakenPrefs", Context.MODE_PRIVATE)
+    val scope = rememberCoroutineScope()
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+
+        Text("Sign Up", style = MaterialTheme.typography.headlineSmall)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // SIGNUP BUTTON
-        Button(onClick = {
-            // Mark user as logged in
-            sharedPrefs.edit().putBoolean("isLoggedIn", true).apply()
+        Button(
+            onClick = {
+                scope.launch {
+                    try {
+                        SupabaseClient.client.auth.signUpWith(Email) {
+                            this.email = email
+                            this.password = password
+                        }
 
-            // Navigate to home and clear signup from backstack
-            navController.navigate("home") {
-                popUpTo("signup") { inclusive = true }
-            }
-        }, modifier = Modifier.fillMaxWidth()) {
-            Text("Sign Up")
+                        prefs.edit().putBoolean("isLoggedIn", true).apply()
+
+                        navController.navigate("home") {
+                            popUpTo("signup") { inclusive = true }
+                        }
+                    } catch (e: Exception) {
+                        error = e.message
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Create Account")
+        }
+
+        error?.let {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(it, color = MaterialTheme.colorScheme.error)
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // BACK TO LOGIN
         TextButton(
             onClick = { navController.navigate("login") },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Already have an account? Sign In")
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SignUpScreenPreview() {
-    MeditakenTheme {
-        SignUpScreen(navController = rememberNavController())
     }
 }
