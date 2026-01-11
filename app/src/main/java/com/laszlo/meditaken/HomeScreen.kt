@@ -7,20 +7,52 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.laszlo.meditaken.database.MedicationDao
 import com.laszlo.meditaken.ui.theme.MeditakenTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, medications: SnapshotStateList<Medication>) {
+fun HomeScreen(
+    navController: NavController,
+    medicationDao: MedicationDao? = null,
+    previewMedications: SnapshotStateList<Medication>? = null
+) {
+    // Always use a mutableStateList for the UI
+    val medications = remember { mutableStateListOf<Medication>() }
+
+    // Load preview medications if provided
+    LaunchedEffect(previewMedications) {
+        previewMedications?.let {
+            medications.clear()
+            medications.addAll(it)
+        }
+    }
+
+    // Load medications from DB if medicationDao is provided
+    LaunchedEffect(medicationDao) {
+        medicationDao?.let { dao ->
+            val medsFromDb = dao.getAll()
+            medications.clear()
+            medications.addAll(
+                medsFromDb.map { entity ->
+                    Medication(
+                        id = entity.id.toString(),
+                        name = entity.name,
+                        dosage = entity.dosage,
+                        time = entity.time
+                    )
+                }
+            )
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -45,9 +77,7 @@ fun HomeScreen(navController: NavController, medications: SnapshotStateList<Medi
                         "${med.name} - ${med.dosage} at ${med.time}",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
-                                navController.navigate("medDetail/${med.id}")
-                            }
+                            .clickable { navController.navigate("addMedication/${med.id}") }
                             .padding(vertical = 4.dp)
                     )
                 }
@@ -65,18 +95,15 @@ fun HomeScreen(navController: NavController, medications: SnapshotStateList<Medi
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    val sampleMeds = remember {
-        mutableStateListOf(
-            Medication("1", "Aspirin", "1 pill", "08:00 AM"),
-            Medication("2", "Vitamin D", "2 pills", "12:00 PM")
-        )
-    }
+    val sampleMedsList = remember { mutableStateListOf(*sampleMedications.toTypedArray()) }
 
     MeditakenTheme {
-        HomeScreen(navController = rememberNavController(), medications = sampleMeds)
+        HomeScreen(
+            navController = rememberNavController(),
+            previewMedications = sampleMedsList
+        )
     }
 }

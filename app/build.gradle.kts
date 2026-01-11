@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.1.10"
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -66,7 +67,15 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:storage-kt")
     implementation("io.ktor:ktor-client-android:2.3.12")
 
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 
+
+    implementation("net.zetetic:android-database-sqlcipher:4.5.4")
+    implementation("androidx.sqlite:sqlite:2.4.0")
+
+    implementation("androidx.security:security-crypto:1.1.0-alpha03")
 
 
     testImplementation(libs.junit)

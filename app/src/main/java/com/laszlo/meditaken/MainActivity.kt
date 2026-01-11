@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.laszlo.meditaken.ui.theme.MeditakenTheme
 
-private const val ENABLE_AUTO_LOGIN = false // 🔁 set true for final release
+private const val ENABLE_AUTO_LOGIN = true //  make sure its true when done
 
 class MainActivity : ComponentActivity() {
 

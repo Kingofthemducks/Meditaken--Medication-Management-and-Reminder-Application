@@ -42,7 +42,7 @@ fun MedicationDetailScreen(
 @Preview(showBackground = true)
 @Composable
 fun MedicationDetailScreenPreview() {
-    // Sample medications for preview
+
     val sampleMeds = remember {
         mutableStateListOf(
             Medication("1", "Aspirin", "1 pill", "08:00 AM"),
@@ -53,7 +53,7 @@ fun MedicationDetailScreenPreview() {
     MeditakenTheme {
         MedicationDetailScreen(
             navController = rememberNavController(),
-            medId = "1", // match one of the sample meds
+            medId = "1",
             medications = sampleMeds
         )
     }
