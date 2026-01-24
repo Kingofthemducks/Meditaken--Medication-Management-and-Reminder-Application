@@ -22,7 +22,8 @@ import com.laszlo.meditaken.ui.theme.MeditakenTheme
 fun HomeScreen(
     navController: NavController,
     medicationDao: MedicationDao? = null,
-    previewMedications: SnapshotStateList<Medication>? = null
+    previewMedications: SnapshotStateList<Medication>? = null,
+    darkModeState: MutableState<Boolean>? = null
 ) {
     // Always use a mutableStateList for the UI
     val medications = remember { mutableStateListOf<Medication>() }
@@ -46,7 +47,9 @@ fun HomeScreen(
                         id = entity.id.toString(),
                         name = entity.name,
                         dosage = entity.dosage,
-                        time = entity.time
+                        time = entity.time,
+                        frequency = entity.frequency,
+                        notes = entity.notes ?: ""
                     )
                 }
             )
@@ -100,10 +103,14 @@ fun HomeScreen(
 fun HomeScreenPreview() {
     val sampleMedsList = remember { mutableStateListOf(*sampleMedications.toTypedArray()) }
 
-    MeditakenTheme {
+    // Provide darkModeState preview
+    val darkModeState = remember { mutableStateOf(false) }
+
+    MeditakenTheme(darkTheme = darkModeState.value) {
         HomeScreen(
             navController = rememberNavController(),
-            previewMedications = sampleMedsList
+            previewMedications = sampleMedsList,
+            darkModeState = darkModeState
         )
     }
 }

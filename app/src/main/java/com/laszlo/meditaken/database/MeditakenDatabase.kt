@@ -6,21 +6,17 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import net.sqlcipher.database.SupportFactory
 
-
-//It sets up Room database to store MedicationEntity records
-//It encrypts via passphrase using SQLCipher
-
-@Database(entities = [MedicationEntity::class], version = 1)
+// Sets up the encrypted Room database using SQLCipher
+@Database(entities = [MedicationEntity::class], version = 2)
 abstract class MeditakenDatabase : RoomDatabase() {
+
     abstract fun medicationDao(): MedicationDao
 
     companion object {
         @Volatile
         private var INSTANCE: MeditakenDatabase? = null
 
-
-    //Ensures only one database instance exists via singleton pattern
-    // Allows access to MedicationDao for CRUD operations on medications
+        // Singleton pattern ensures only one database instance exists
         fun getInstance(context: Context, passphrase: ByteArray): MeditakenDatabase {
             return INSTANCE ?: synchronized(this) {
                 val factory = SupportFactory(passphrase)
@@ -29,8 +25,11 @@ abstract class MeditakenDatabase : RoomDatabase() {
                     MeditakenDatabase::class.java,
                     "meditaken.db"
                 )
+                    // Used during development to handle schema changes
                     .openHelperFactory(factory)
+                    .fallbackToDestructiveMigration()
                     .build()
+
                 INSTANCE = instance
                 instance
             }

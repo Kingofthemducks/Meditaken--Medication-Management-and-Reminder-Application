@@ -2,14 +2,16 @@ package com.laszlo.meditaken
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.laszlo.meditaken.database.MedicationEntity
+import com.laszlo.meditaken.database.MeditakenDatabase
+import com.laszlo.meditaken.database.KeyStoreManager
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.rememberNavController
 import com.laszlo.meditaken.ui.theme.MeditakenTheme
 
@@ -17,44 +19,69 @@ import com.laszlo.meditaken.ui.theme.MeditakenTheme
 fun MedicationDetailScreen(
     navController: NavController,
     medId: String,
-    medications: SnapshotStateList<Medication>
+    medications: SnapshotStateList<Medication>,
+    darkModeState: MutableState<Boolean>? = null
 ) {
     val med = medications.find { it.id == medId }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        med?.let {
-            Text(it.name, style = MaterialTheme.typography.titleLarge)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text("Dosage: ${it.dosage}")
-            Text("Time: ${it.time}")
-        } ?: Text("Medication not found")
+    // ✅ Wrap in Surface
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Text(
+                "Medication Details",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.popBackStack() }) {
-            Text("Back")
+            if (med != null) {
+                Text("Name: ${med.name}", color = MaterialTheme.colorScheme.onBackground)
+                Text("Dosage: ${med.dosage}", color = MaterialTheme.colorScheme.onBackground)
+                Text("Time: ${med.time}", color = MaterialTheme.colorScheme.onBackground)
+                Text("Frequency: ${med.frequency} per day", color = MaterialTheme.colorScheme.onBackground)
+                Text("Notes: ${med.notes ?: "None"}", color = MaterialTheme.colorScheme.onBackground)
+            } else {
+                Text("Medication not found.", color = MaterialTheme.colorScheme.onBackground)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Back")
+            }
         }
     }
 }
 
 
-
-
 @Preview(showBackground = true)
 @Composable
 fun MedicationDetailScreenPreview() {
-
-    val sampleMeds = remember {
+    val sampleMedsList = remember {
         mutableStateListOf(
-            Medication("1", "Aspirin", "1 pill", "08:00 AM"),
-            Medication("2", "Vitamin D", "2 pills", "12:00 PM")
+            Medication("1","Aspirin","1 pill","08:00",1,""),
+            Medication("2","Vitamin D","2 pills","12:00",1,""),
+            Medication("3","Metformin","1 pill","18:00",1,"")
         )
     }
+    val darkModeState = remember { mutableStateOf(false) }
 
-    MeditakenTheme {
+    MeditakenTheme(darkTheme = darkModeState.value) {
         MedicationDetailScreen(
             navController = rememberNavController(),
             medId = "1",
-            medications = sampleMeds
+            medications = sampleMedsList,
+            darkModeState = darkModeState
         )
     }
 }
