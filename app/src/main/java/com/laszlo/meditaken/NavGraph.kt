@@ -16,7 +16,7 @@ fun NavGraph(
     startDestination: String = "lock",
     darkModeState: MutableState<Boolean>,
     selectedAlarmSoundUri: MutableState<Uri?>,
-    activity: FragmentActivity   // ← FIXED HERE
+    activity: FragmentActivity
 ) {
     val navController = rememberNavController()
     val context = LocalContext.current
