@@ -1,25 +1,29 @@
 package com.laszlo.meditaken
 
 import android.app.TimePickerDialog
-import android.widget.TimePicker
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.laszlo.meditaken.alarm.AlarmScheduler
 import com.laszlo.meditaken.database.KeyStoreManager
 import com.laszlo.meditaken.database.MeditakenDatabase
 import com.laszlo.meditaken.database.MedicationEntity
 import kotlinx.coroutines.launch
-import com.laszlo.meditaken.ui.theme.MeditakenTheme
-import java.util.*
-import com.laszlo.meditaken.alarm.AlarmScheduler
+import java.util.Calendar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMedicationScreen(
     navController: NavController,
@@ -28,257 +32,364 @@ fun AddMedicationScreen(
     darkModeState: MutableState<Boolean>? = null
 ) {
     val context = LocalContext.current
-    val db = MeditakenDatabase.getInstance(context, KeyStoreManager.getDatabaseKey(context))
+    val db = remember {
+        MeditakenDatabase.getInstance(
+            context,
+            KeyStoreManager.getDatabaseKey(context)
+        )
+    }
+    val dao = db.medicationDao()
     val scope = rememberCoroutineScope()
+
+    var existingMed by remember { mutableStateOf<MedicationEntity?>(null) }
+    val isEditing = existingMed != null
 
     var name by remember { mutableStateOf("") }
     var dosage by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf(1) }
-    var times by remember { mutableStateOf(List(frequency) { "" }) }
+    var timeInputs by remember { mutableStateOf(listOf("08:00")) }
     var notes by remember { mutableStateOf("") }
 
+    val dayOptions = listOf(
+        "MON" to "M",
+        "TUE" to "T",
+        "WED" to "W",
+        "THU" to "T",
+        "FRI" to "F",
+        "SAT" to "S",
+        "SUN" to "S"
+    )
+
+    var selectedDays by remember { mutableStateOf(mutableSetOf<String>()) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    // Load from DB
     LaunchedEffect(editMedId) {
         if (editMedId != null) {
-            val medEntity = db.medicationDao().getById(editMedId.toInt())
-            medEntity?.let { entity ->
+            val entity = dao.getById(editMedId.toLong())
+            if (entity != null) {
+                existingMed = entity
+
                 name = entity.name
                 dosage = entity.dosage
-                times = entity.time.split(",")
-                frequency = times.size
+                frequency = entity.frequency
+                timeInputs = entity.time.split(",")
                 notes = entity.notes ?: ""
+
+                selectedDays = if (entity.days == "ALL") {
+                    dayOptions.map { it.first }.toMutableSet()
+                } else {
+                    entity.days.split(",").filter { it.isNotBlank() }.toMutableSet()
+                }
             }
+        } else {
+            selectedDays = mutableSetOf()
         }
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
+    // Keep timeInputs aligned with frequency
+    LaunchedEffect(frequency) {
+        val current = timeInputs.toMutableList()
+        when {
+            current.size < frequency -> repeat(frequency - current.size) { current.add("08:00") }
+            current.size > frequency -> repeat(current.size - frequency) { current.removeAt(current.lastIndex) }
+        }
+        timeInputs = current
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(if (isEditing) "Edit Medication" else "Add Medication") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
+
+        //  Entire screen scrolls properly
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-            Text(
-                if (editMedId == null) "Add Medication" else "Edit Medication",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onBackground
-            )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            TextField(
+            OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Medication Name") }
+                label = { Text("Name") },
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(Modifier.height(8.dp))
 
-            TextField(
+            OutlinedTextField(
                 value = dosage,
                 onValueChange = { dosage = it },
-                label = { Text("Dosage") }
+                label = { Text("Dosage") },
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(Modifier.height(8.dp))
 
-            Text("Times per day", color = MaterialTheme.colorScheme.onBackground)
+            FrequencyDropdown(
+                frequency = frequency,
+                onFrequencyChange = { frequency = it }
+            )
 
-            var expanded by remember { mutableStateOf(false) }
-            Box {
-                Button(onClick = { expanded = true }) {
-                    Text(frequency.toString())
-                }
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    (1..5).forEach { freq ->
-                        DropdownMenuItem(
-                            text = { Text(freq.toString()) },
-                            onClick = {
-                                frequency = freq
-                                times = List(freq) { index -> times.getOrElse(index) { "" } }
-                                expanded = false
-                            }
-                        )
+            Spacer(Modifier.height(8.dp))
+
+            timeInputs.forEachIndexed { index, time ->
+                TimePickerRow(
+                    label = "Time ${index + 1}",
+                    time = time,
+                    onTimeChange = { newTime ->
+                        val list = timeInputs.toMutableList()
+                        list[index] = newTime
+                        timeInputs = list
                     }
-                }
+                )
+                Spacer(Modifier.height(4.dp))
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(Modifier.height(8.dp))
 
-            times.forEachIndexed { index, timeValue ->
-                TimePickerField(index, timeValue) { newTime ->
-                    times = times.toMutableList().also { it[index] = newTime }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-
-            TextField(
+            OutlinedTextField(
                 value = notes,
                 onValueChange = { notes = it },
-                label = { Text("Notes (optional)") }
+                label = { Text("Notes") },
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
-            // ===== SAVE / UPDATE =====
+            Text("Days")
+            Spacer(Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                dayOptions.forEach { (code, label) ->
+                    FilterChip(
+                        selected = selectedDays.contains(code),
+                        onClick = {
+                            selectedDays = selectedDays.toMutableSet().apply {
+                                if (contains(code)) remove(code) else add(code)
+                            }
+                        },
+                        label = { Text(label) }
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            TextButton(onClick = {
+                selectedDays = dayOptions.map { it.first }.toMutableSet()
+            }) {
+                Text("Select All Days")
+            }
+
+            Spacer(Modifier.height(24.dp))
+            //Never allow empty days - treat as ALL
+
+
             Button(
                 onClick = {
-                    if (name.isNotBlank() && dosage.isNotBlank() && times.all { it.isNotBlank() }) {
-                        scope.launch {
-                            val timeString = times.joinToString(",")
+                    if (name.isBlank() || dosage.isBlank() || timeInputs.any { it.isBlank() }) {
+                        Toast.makeText(context, "Please fill all required fields", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
 
-                            if (editMedId == null) {
-                                val newMed = MedicationEntity(
-                                    name = name,
-                                    dosage = dosage,
-                                    time = timeString,
-                                    frequency = frequency,
-                                    notes = notes
-                                )
-
-                                val newId = db.medicationDao().insert(newMed).toInt()
-
-                                medications.add(
-                                    Medication(
-                                        newId.toString(),
-                                        name,
-                                        dosage,
-                                        timeString,
-                                        frequency,
-                                        notes
-                                    )
-                                )
-
-                                times.forEach { time ->
-                                    AlarmScheduler.scheduleMedicationAlarm(
-                                        context = context,
-                                        medicationId = newId,
-                                        time = time
-                                    )
-                                }
-
-                            } else {
-                                val idInt = editMedId.toInt()
-                                val existingMed = db.medicationDao().getById(idInt)
-
-                                existingMed?.let { med ->
-                                    med.time.split(",").forEach { oldTime ->
-                                        AlarmScheduler.cancelMedicationAlarm(
-                                            context = context,
-                                            medicationId = idInt,
-                                            time = oldTime
-                                        )
-                                    }
-
-                                    med.name = name
-                                    med.dosage = dosage
-                                    med.time = timeString
-                                    med.frequency = frequency
-                                    med.notes = notes
-                                    db.medicationDao().update(med)
-
-                                    times.forEach { time ->
-                                        AlarmScheduler.scheduleMedicationAlarm(
-                                            context = context,
-                                            medicationId = idInt,
-                                            time = time
-                                        )
-                                    }
-
-                                    val index = medications.indexOfFirst { it.id == editMedId }
-                                    if (index != -1) {
-                                        medications[index] = Medication(
-                                            med.id.toString(),
-                                            med.name,
-                                            med.dosage,
-                                            timeString,
-                                            frequency,
-                                            notes
-                                        )
-                                    }
-                                }
-                            }
-
-                            navController.popBackStack()
+                    val daysString =
+                        if (selectedDays.isEmpty() || selectedDays.size == dayOptions.size) {
+                            "ALL"
+                        } else {
+                            selectedDays.joinToString(",")
                         }
+
+                    val timesString = timeInputs.joinToString(",")
+
+                    scope.launch {
+                        if (isEditing) {
+                            val old = existingMed!!
+
+                            AlarmScheduler.cancelMedicationAlarms(
+                                context, old.id, old.time.split(","), old.days
+                            )
+
+                            val updated = old.copy(
+                                name = name,
+                                dosage = dosage,
+                                time = timesString,
+                                frequency = frequency,
+                                notes = notes,
+                                days = daysString
+                            )
+
+                            dao.update(updated)
+
+                            AlarmScheduler.scheduleMedicationAlarms(
+                                context = context,
+                                medId = updated.id.toLong(),
+                                name = updated.name,
+                                times = updated.time.split(","),
+                                days = updated.days,
+                                dosage = updated.dosage
+                            )
+
+                        } else {
+                            val entity = MedicationEntity(
+                                name = name,
+                                dosage = dosage,
+                                time = timesString,
+                                frequency = frequency,
+                                notes = notes,
+                                days = daysString
+                            )
+
+                            val newId = dao.insert(entity)
+
+                            AlarmScheduler.scheduleMedicationAlarms(
+                                context = context,
+                                medId = newId,
+                                name = entity.name,
+                                times = entity.time.split(","),
+                                days = entity.days,
+                                dosage = entity.dosage
+                            )
+                        }
+
+                        navController.popBackStack()
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(if (editMedId == null) "Save" else "Update")
+                Text(if (isEditing) "Update" else "Save")
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            // Delete button now always visible because screen scrolls
+            if (isEditing) {
+                Spacer(Modifier.height(8.dp))
 
-            // ✅ BACK BUTTON RESTORED
-            Button(
-                onClick = { navController.popBackStack() },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Back")
+                OutlinedButton(
+                    onClick = { showDeleteDialog = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Delete")
+                }
+            }
+
+            Spacer(Modifier.height(40.dp))
+        }
+
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = { Text("Delete Medication") },
+                text = { Text("Are you sure you want to delete this medication?") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDeleteDialog = false
+                            val entity = existingMed!!
+
+                            scope.launch {
+                                AlarmScheduler.cancelMedicationAlarms(
+                                    context, entity.id, entity.time.split(","), entity.days
+                                )
+                                dao.delete(entity)
+                                navController.popBackStack()
+                            }
+                        }
+                    ) {
+                        Text("Delete", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDeleteDialog = false }) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun FrequencyDropdown(
+    frequency: Int,
+    onFrequencyChange: (Int) -> Unit
+) {
+    val options = listOf(1, 2, 3, 4, 5)
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        OutlinedTextField(
+            value = "$frequency times per day",
+            onValueChange = {},
+            modifier = Modifier.fillMaxWidth().clickable { expanded = true },
+            enabled = false,
+            label = { Text("Times per day") },
+            trailingIcon = {
+                Icon(Icons.Default.ArrowDropDown, contentDescription = "Select frequency")
+            }
+        )
+
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            options.forEach { value ->
+                DropdownMenuItem(
+                    text = { Text("$value times per day") },
+                    onClick = {
+                        onFrequencyChange(value)
+                        expanded = false
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun TimePickerField(index: Int, currentTime: String, onTimeSelected: (String) -> Unit) {
+private fun TimePickerRow(
+    label: String,
+    time: String,
+    onTimeChange: (String) -> Unit
+) {
     val context = LocalContext.current
-    val calendar = Calendar.getInstance()
+    val parts = time.split(":")
+    val hour = parts.getOrNull(0)?.toIntOrNull() ?: 8
+    val minute = parts.getOrNull(1)?.toIntOrNull() ?: 0
 
-    if (currentTime.isNotBlank()) {
-        val parts = currentTime.split(":")
-        if (parts.size == 2) {
-            calendar.set(Calendar.HOUR_OF_DAY, parts[0].toIntOrNull() ?: 0)
-            calendar.set(Calendar.MINUTE, parts[1].toIntOrNull() ?: 0)
-        }
-    }
-
-    var displayTime by remember { mutableStateOf(currentTime) }
-
-    Button(
+    OutlinedButton(
         onClick = {
-            val picker = TimePickerDialog(
+            val cal = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, hour)
+                set(Calendar.MINUTE, minute)
+            }
+
+            TimePickerDialog(
                 context,
-                { _: TimePicker, hour: Int, minute: Int ->
-                    val formatted = String.format("%02d:%02d", hour, minute)
-                    displayTime = formatted
-                    onTimeSelected(formatted)
+                { _, h, m ->
+                    val newTime = String.format("%02d:%02d", h, m)
+                    onTimeChange(newTime)
                 },
-                calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE),
+                cal.get(Calendar.HOUR_OF_DAY),
+                cal.get(Calendar.MINUTE),
                 true
-            )
-            picker.show()
+            ).show()
         },
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(if (displayTime.isNotBlank()) displayTime else "Set time ${index + 1}")
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AddMedicationScreenPreview() {
-    val sampleMedsList = remember {
-        mutableStateListOf(
-            Medication("1", "Aspirin", "1 pill", "08:00", 1, ""),
-            Medication("2", "Vitamin D", "2 pills", "12:00", 1, ""),
-            Medication("3", "Metformin", "1 pill", "18:00", 1, "")
-        )
-    }
-
-    val darkModeState = remember { mutableStateOf(false) }
-
-    MeditakenTheme(darkTheme = darkModeState.value) {
-        AddMedicationScreen(
-            navController = rememberNavController(),
-            medications = sampleMedsList,
-            darkModeState = darkModeState
-        )
+        Text("$label: $time")
     }
 }

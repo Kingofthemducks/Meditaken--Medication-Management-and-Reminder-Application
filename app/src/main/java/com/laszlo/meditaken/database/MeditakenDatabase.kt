@@ -4,10 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import net.sqlcipher.database.SupportFactory
 
-// Sets up the encrypted Room database using SQLCipher
-@Database(entities = [MedicationEntity::class], version = 2)
+@Database(
+    entities = [MedicationEntity::class],
+    version = 3,
+    exportSchema = false
+)
 abstract class MeditakenDatabase : RoomDatabase() {
 
     abstract fun medicationDao(): MedicationDao
@@ -16,7 +20,6 @@ abstract class MeditakenDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: MeditakenDatabase? = null
 
-        // Singleton pattern ensures only one database instance exists
         fun getInstance(context: Context, passphrase: ByteArray): MeditakenDatabase {
             return INSTANCE ?: synchronized(this) {
                 val factory = SupportFactory(passphrase)
@@ -25,13 +28,25 @@ abstract class MeditakenDatabase : RoomDatabase() {
                     MeditakenDatabase::class.java,
                     "meditaken.db"
                 )
-                    // Used during development to handle schema changes
                     .openHelperFactory(factory)
-                    .fallbackToDestructiveMigration()
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build()
-
                 INSTANCE = instance
                 instance
+            }
+        }
+
+        val MIGRATION_1_2 = object : androidx.room.migration.Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+
+            }
+        }
+
+        val MIGRATION_2_3 = object : androidx.room.migration.Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE medications ADD COLUMN days TEXT NOT NULL DEFAULT 'ALL'"
+                )
             }
         }
     }

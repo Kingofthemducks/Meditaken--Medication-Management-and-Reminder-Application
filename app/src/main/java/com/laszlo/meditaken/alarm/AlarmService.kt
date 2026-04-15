@@ -31,7 +31,7 @@ class AlarmService : Service() {
 
         startForeground(1, notification)
 
-        // Play default alarm sound safely
+        // Play default alarm sound
         mediaPlayer = MediaPlayer.create(this, R.raw.default_alarm)
         mediaPlayer?.apply {
             isLooping = true

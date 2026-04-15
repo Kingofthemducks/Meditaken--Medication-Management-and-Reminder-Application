@@ -11,9 +11,13 @@ interface MedicationDao {
     @Update
     suspend fun update(med: MedicationEntity)
 
+    @Delete
+    suspend fun delete(med: MedicationEntity)
+
+    @Query("SELECT * FROM medications WHERE id = :id")
+    suspend fun getById(id: Long): MedicationEntity?
+
     @Query("SELECT * FROM medications")
     suspend fun getAll(): List<MedicationEntity>
-
-    @Query("SELECT * FROM medications WHERE id = :id LIMIT 1")
-    suspend fun getById(id: Int): MedicationEntity?
 }
+

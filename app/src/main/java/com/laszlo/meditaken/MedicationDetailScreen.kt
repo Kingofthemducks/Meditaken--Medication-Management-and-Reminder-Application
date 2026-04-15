@@ -7,11 +7,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.laszlo.meditaken.database.MedicationEntity
-import com.laszlo.meditaken.database.MeditakenDatabase
-import com.laszlo.meditaken.database.KeyStoreManager
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.runtime.remember
 import androidx.navigation.compose.rememberNavController
 import com.laszlo.meditaken.ui.theme.MeditakenTheme
 
@@ -24,7 +20,10 @@ fun MedicationDetailScreen(
 ) {
     val med = medications.find { it.id == medId }
 
-    // ✅ Wrap in Surface
+    val daysLabel = remember(med) {
+        "Every day"
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -47,6 +46,7 @@ fun MedicationDetailScreen(
                 Text("Time: ${med.time}", color = MaterialTheme.colorScheme.onBackground)
                 Text("Frequency: ${med.frequency} per day", color = MaterialTheme.colorScheme.onBackground)
                 Text("Notes: ${med.notes ?: "None"}", color = MaterialTheme.colorScheme.onBackground)
+                Text("Days: $daysLabel", color = MaterialTheme.colorScheme.onBackground)
             } else {
                 Text("Medication not found.", color = MaterialTheme.colorScheme.onBackground)
             }
@@ -62,7 +62,6 @@ fun MedicationDetailScreen(
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
