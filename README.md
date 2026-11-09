@@ -246,12 +246,6 @@ Test Devices
 
 Testing was conducted using the following devices:
 
-Device
-
-Testing Environment
-
-Purpose
-
 Google Pixel 6 Pro
 
 Android Studio Emulator
