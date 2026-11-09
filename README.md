@@ -1,4 +1,4 @@
-💊 Medication Management & Reminder Application
+💊 Meditaken - Medication Management & Reminder Application
 
 A secure Android application developed using Kotlin, Jetpack Compose, Room, SQLite, and SQLCipher. Designed to help users manage their medications, create personalised reminder schedules, and maintain their daily medication routines.
 
