@@ -37,24 +37,24 @@ object AlarmScheduler {
     }
 
     fun scheduleMedicationAlarms(
-        context: Context,
-        medId: Long,
-        name: String,
-        times: List<String>,
-        days: String,
-        dosage: String
-    ) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            context: Context,
+            medId: Long,
+            name: String,
+            times: List<String>,
+            days: String,
+            dosage: String
+        ) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (!alarmManager.canScheduleExactAlarms()) {
-                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (!alarmManager.canScheduleExactAlarms()) {
+                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    context.startActivity(intent)
+                    return
                 }
-                context.startActivity(intent)
-                return
             }
-        }
 
         val selectedDays = normalizeDays(days)
         Log.d("ALARM_DEBUG", "Scheduling alarms for days: $selectedDays")

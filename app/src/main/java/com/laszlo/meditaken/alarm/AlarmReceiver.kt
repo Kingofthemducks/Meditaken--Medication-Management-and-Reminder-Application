@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.laszlo.meditaken.alarm.AlarmScheduler.dayCodeToCalendar
 
+// Triggered when an alarm fires
 class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -63,6 +64,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
             )
 
+            // Schedule an exact alarm that wakes the device, even in Doze mode
             alarmManager.setExactAndAllowWhileIdle(
                 android.app.AlarmManager.RTC_WAKEUP,
                 triggerTime,
