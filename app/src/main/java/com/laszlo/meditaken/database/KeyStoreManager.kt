@@ -44,7 +44,6 @@ object KeyStoreManager {
             newKey
         }
 
-        Log.d("KeyStoreManager", "DB key: ${keyBytes.joinToString("") { "%02x".format(it) }}")
         return keyBytes
     }
 
