@@ -401,3 +401,13 @@ Biometric authentication.
 Background alarm scheduling.
 
 Local notifications and interactive reminder functionality.
+
+📄 Copyright & Usage
+
+Copyright © 2026 Laszlo Major. All rights reserved.
+
+This repository is publicly available for portfolio and educational demonstration purposes.
+
+The source code is provided for viewing and evaluation. No licence is granted for copying, modifying, redistributing, or commercially using this project without prior written permission from the copyright holder.
+
+Third-party libraries and dependencies remain subject to their respective licences.
