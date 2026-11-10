@@ -8,19 +8,19 @@ The application combines medication management, custom alarm scheduling, interac
   <tr>
     <td align="center">
       <img src="./screenshots/lockscreen%20of%20meditaken%20with%20message.png" width="180">
-      <br>Lockscreen
+      <br>Google Pixel 7 Pro Lockscreen
     </td>
     <td align="center">
       <img src="./screenshots/home%20screen%20diplaying%20next%20alarm.png" width="180">
-      <br>Home Screen
+      <br>Google Pixel 7 Pro Home Screen
     </td>
     <td align="center">
       <img src="./screenshots/home%20screen%20in%20dark%20mode%20.png" width="180">
-      <br>Home Screen – Dark Mode
+      <br>Google Pixel 7 Pro Home Screen – Dark Mode
     </td>
     <td align="center">
       <img src="./screenshots/addmedication%20screen%20dark%20mode%20empty.png" width="180">
-      <br>Medication Screen – Dark Mode
+      <br>Google Pixel 7 Pro Medication Screen – Dark Mode
     </td>
   </tr>
   </table>
