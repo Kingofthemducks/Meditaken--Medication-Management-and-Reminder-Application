@@ -258,7 +258,7 @@ The application also incorporates device lock-screen authentication as an additi
 
 This provides an additional security measure for protecting personal medication information.
 
-<img src="./screenshots/Meditaken%20LockScreen%20on%20S22%20ultra.jpg" width="700"> <img src="./screenshots/lockscreen%20of%20meditaken%20with%20message.png" width="700">
+<img src="./screenshots/Meditaken%20LockScreen%20on%20S22%20ultra.jpg" width="100"> <img src="./screenshots/lockscreen%20of%20meditaken%20with%20message.png" width="100">
 
 🔒 Privacy & Security
 
