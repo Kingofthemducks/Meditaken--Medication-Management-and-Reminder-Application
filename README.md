@@ -4,6 +4,10 @@ A secure Android application developed using Kotlin, Jetpack Compose, Room, SQLi
 
 The application combines medication management, custom alarm scheduling, interactive notifications, biometric authentication, and AES-256 encrypted local database storage to provide a convenient and secure medication tracking experience.
 
+![lockscreen of meditaken with message](./screenshots/lockscreen%20of%20meditaken%20with%20message.png) ![home screen diplaying next alarm](./screenshots/home%20screen%20diplaying%20next%20alarm.png) 
+
+![s22 ultra home screen with a record white](./screenshots/s22%20ultra%20home%20screen%20with%20a%20record%20white.jpg) ![s22 ultra meditaken homescreen with added record dark mode](./screenshots/s22%20ultra%20meditaken%20homescreen%20with%20added%20record%20dark%20mode.jpg)
+
 📱 About the Project
 
 This project is a native Android medication management application developed using Kotlin and Android Studio.
