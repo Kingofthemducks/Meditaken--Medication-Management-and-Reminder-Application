@@ -4,10 +4,6 @@ A secure Android application developed using Kotlin, Jetpack Compose, Room, SQLi
 
 The application combines medication management, custom alarm scheduling, interactive notifications, biometric authentication, and AES-256 encrypted local database storage to provide a convenient and secure medication tracking experience.
 
-### Screenshots
-
-### Screenshots
-
 <table>
   <tr>
     <td align="center">
@@ -27,6 +23,7 @@ The application combines medication management, custom alarm scheduling, interac
       <br>Medication Screen – Dark Mode
     </td>
   </tr>
+  </table>
  
 📱 About the Project
 
@@ -39,8 +36,9 @@ The application provides full medication management functionality, allowing user
 Security was an important consideration throughout development. The application uses SQLCipher with AES-256 encryption to protect its local SQLite database and incorporates Android BiometricPrompt and device lock-screen authentication to restrict unauthorised application access.
 
 The user interface was developed primarily using Jetpack Compose, providing a modern, responsive, and accessible user experience with support for both light and dark modes.
-
- <tr>
+ 
+<table>
+<tr>
     <td align="center">
       <img src="./screenshots/Meditaken%20LockScreen%20on%20S22%20ultra.jpg" width="180">
       <br>S22 Ultra – LockScreen
