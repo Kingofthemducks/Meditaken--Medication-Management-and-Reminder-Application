@@ -27,7 +27,20 @@ The application combines medication management, custom alarm scheduling, interac
       <br>Medication Screen – Dark Mode
     </td>
   </tr>
-  <tr>
+ 
+📱 About the Project
+
+This project is a native Android medication management application developed using Kotlin and Android Studio.
+
+The primary objective was to create an application that helps users organise their medications, manage personalised reminder schedules, and receive timely notifications when medication is due.
+
+The application provides full medication management functionality, allowing users to add, edit, delete, and retrieve medication records. It also incorporates a custom-built alarm system using Android AlarmManager, with interactive notification functionality that allows users to stop or snooze reminders.
+
+Security was an important consideration throughout development. The application uses SQLCipher with AES-256 encryption to protect its local SQLite database and incorporates Android BiometricPrompt and device lock-screen authentication to restrict unauthorised application access.
+
+The user interface was developed primarily using Jetpack Compose, providing a modern, responsive, and accessible user experience with support for both light and dark modes.
+
+ <tr>
     <td align="center">
       <img src="./screenshots/Meditaken%20LockScreen%20on%20S22%20ultra.jpg" width="180">
       <br>S22 Ultra – LockScreen
@@ -47,17 +60,6 @@ The application combines medication management, custom alarm scheduling, interac
   </tr>
 </table>
 
-📱 About the Project
-
-This project is a native Android medication management application developed using Kotlin and Android Studio.
-
-The primary objective was to create an application that helps users organise their medications, manage personalised reminder schedules, and receive timely notifications when medication is due.
-
-The application provides full medication management functionality, allowing users to add, edit, delete, and retrieve medication records. It also incorporates a custom-built alarm system using Android AlarmManager, with interactive notification functionality that allows users to stop or snooze reminders.
-
-Security was an important consideration throughout development. The application uses SQLCipher with AES-256 encryption to protect its local SQLite database and incorporates Android BiometricPrompt and device lock-screen authentication to restrict unauthorised application access.
-
-The user interface was developed primarily using Jetpack Compose, providing a modern, responsive, and accessible user experience with support for both light and dark modes.
 
 ✨ Features
 
