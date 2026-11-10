@@ -240,7 +240,7 @@ SQLCipher is integrated to provide AES-256 encryption for the local SQLite datab
 
 This implementation adds a layer of protection to stored medication information, helping prevent unauthorised access to the database outside the application's intended access mechanisms.
 
- <img src="./screenshots/meditakendb%20encrypted%20evidence.png" width="180">
+ <img src="./screenshots/meditakendb%20encrypted%20evidence.png" width="500">
 
 4. Alarm Management – Android AlarmManager
 
