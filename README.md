@@ -6,47 +6,43 @@ The application combines medication management, custom alarm scheduling, interac
 
 ### Screenshots
 
+### Screenshots
+
 <table>
   <tr>
     <td align="center">
-      <img src="./screenshots/lockscreen%20of%20meditaken%20with%20message.png" width="100">
-      <br>Lockscreen 
+      <img src="./screenshots/lockscreen%20of%20meditaken%20with%20message.png" width="180">
+      <br>Lockscreen
     </td>
     <td align="center">
-      <img src="./screenshots/home%20screen%20diplaying%20next%20alarm.png" width="100">
-      <br>Home Screen 
+      <img src="./screenshots/home%20screen%20diplaying%20next%20alarm.png" width="180">
+      <br>Home Screen
     </td>
-    
-     <td align="center">
-      <img src="./screenshots/home%20screen%20in%20dark%20mode%20.png" width="100">
-      <br>Home Screen in Dark Mode
+    <td align="center">
+      <img src="./screenshots/home%20screen%20in%20dark%20mode%20.png" width="180">
+      <br>Home Screen – Dark Mode
     </td>
-
-     <td align="center">
-      <img src="./screenshots/addmedication%20screen%20dark%20mode%20empty.png" width="100">
-      <br>Medication Screen Dark Mode
+    <td align="center">
+      <img src="./screenshots/addmedication%20screen%20dark%20mode%20empty.png" width="180">
+      <br>Medication Screen – Dark Mode
     </td>
-    
   </tr>
   <tr>
     <td align="center">
-      <img src="./screenshots/s22%20ultra%20home%20screen%20with%20a%20record%20white.jpg" width="100">
-      <br>S22 Ultra Home Page
+      <img src="./screenshots/s22%20ultra%20home%20screen%20with%20a%20record%20white.jpg" width="180">
+      <br>S22 Ultra – Home Screen
     </td>
-
     <td align="center">
-      <img src="./screenshots/s22%20ultra%20home%20screen%20with%20a%20record%20white.jpg" width="100">
-      <br>S22 Ultra Medication Screen Dark
+      <img src="./screenshots/s22%20ultra%20home%20screen%20with%20a%20record%20white.jpg" width="180">
+      <br>S22 Ultra – Medication Screen
     </td>
-
     <td align="center">
-      <img src="./screenshots/s22%20ultra%20meditaken%20homescreen%20with%20added%20record%20dark%20mode.jpg" width="100">
-      <br>S22 Ultra Home Dark Mode 
+      <img src="./screenshots/s22%20ultra%20meditaken%20homescreen%20with%20added%20record%20dark%20mode.jpg" width="180">
+      <br>S22 Ultra – Home Screen Dark Mode
     </td>
-    
     <td align="center">
-      <img src="./screenshots/s22%20ultra%20addmedicationscreen%20with%20data%20conjured%20dark%20mode.jpg" width="100">
-      <br>S22 Ultra Medication Screen Dark Mode
+      <img src="./screenshots/s22%20ultra%20addmedicationscreen%20with%20data%20conjured%20dark%20mode.jpg" width="180">
+      <br>S22 Ultra – Medication Screen Dark Mode
     </td>
   </tr>
 </table>
