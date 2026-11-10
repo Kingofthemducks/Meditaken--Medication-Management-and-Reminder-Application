@@ -424,7 +424,7 @@ The combination of emulator-based testing, physical device testing, and performa
     <td align="center">
       <img src="./screenshots/alarm%20going%20off%20when%20app%20is%20not%20running%20in%20background.png" width="180">
       <br><b>Background Alarm Trigger</b>
-      <br>S22 Ultra – App Not Running
+      <br>Google Pixel 7 Pro Emulator
     </td>
   </tr>
 </table>
