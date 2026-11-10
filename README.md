@@ -402,27 +402,30 @@ Behaviour on both emulated and physical Android devices.
 
 The combination of emulator-based testing, physical device testing, and performance monitoring provided an opportunity to evaluate the application beyond basic functional verification.
 
+### Developer Mode & Alarm Testing
+
 <table>
-<tr>
+  <tr>
     <td align="center">
       <img src="./screenshots/4%20alarms%20at%20once%20with%20developer%20usage%20stats%201.jpg" width="180">
-      <br>S22 Ultra – Developer Mode Testing Regular Usage
+      <br><b>Regular Usage</b>
+      <br>S22 Ultra – Developer Mode
     </td>
     <td align="center">
       <img src="./screenshots/4%20alarms%20at%20once%20with%20developer%20usage%20stats%20not%20actively%20running%20stats.jpg" width="180">
-      <br>S22 Ultra – Developer Mode Alarm Testing
+      <br><b>Background Usage</b>
+      <br>S22 Ultra – App Not Actively Running
     </td>
-  
     <td align="center">
       <img src="./screenshots/s22%20u%20alarm%20message%20with%20interactable%20buttons.jpg" width="180">
-      <br>S22 Ultra – Developer Mode Alarm Testing
+      <br><b>Interactive Alarm Notification</b>
+      <br>S22 Ultra – Alarm Action Buttons
     </td>
-
     <td align="center">
       <img src="./screenshots/alarm%20going%20off%20when%20app%20is%20not%20running%20in%20background.png" width="180">
-      <br>S22 Ultra – Developer Mode Alarm Testing
+      <br><b>Background Alarm Trigger</b>
+      <br>S22 Ultra – App Not Running
     </td>
-  
   </tr>
 </table>
 
