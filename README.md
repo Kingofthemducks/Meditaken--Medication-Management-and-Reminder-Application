@@ -29,8 +29,8 @@ The application combines medication management, custom alarm scheduling, interac
   </tr>
   <tr>
     <td align="center">
-      <img src="./screenshots/s22%20ultra%20home%20screen%20with%20a%20record%20white.jpg" width="180">
-      <br>S22 Ultra – Home Screen
+      <img src="./screenshots/Meditaken%20LockScreen%20on%20S22%20ultra.jpg" width="180">
+      <br>S22 Ultra – LockScreen
     </td>
     <td align="center">
       <img src="./screenshots/s22%20ultra%20home%20screen%20with%20a%20record%20white.jpg" width="180">
