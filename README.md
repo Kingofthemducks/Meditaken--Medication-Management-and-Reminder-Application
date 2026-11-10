@@ -205,6 +205,19 @@ Composable functions are used to construct the application's screens and reusabl
 
 The application also includes dark mode support to provide an alternative viewing experience.
 
+<table>
+<tr>
+    <td align="center">
+      <img src="./screenshots/s22%20ultra%20home%20screen%20with%20a%20record%20white.jpg" width="180">
+      <br>S22 Ultra – Medication Screen
+    </td>
+    <td align="center">
+      <img src="./screenshots/s22%20ultra%20addmedicationscreen%20with%20data%20conjured%20dark%20mode.jpg" width="180">
+      <br>S22 Ultra – Medication Screen Dark Mode
+    </td>
+  </tr>
+</table>
+
 2. Database Management – Room & SQLite
 
 Room is used as the persistence layer for the application's SQLite database.
@@ -226,6 +239,8 @@ This allows medication information to persist locally between application sessio
 SQLCipher is integrated to provide AES-256 encryption for the local SQLite database.
 
 This implementation adds a layer of protection to stored medication information, helping prevent unauthorised access to the database outside the application's intended access mechanisms.
+
+ <img src="./screenshots/meditakendb%20encrypted%20evidence.png" width="180">
 
 4. Alarm Management – Android AlarmManager
 
@@ -386,6 +401,30 @@ CPU resource usage during normal operation and alarm activation.
 Behaviour on both emulated and physical Android devices.
 
 The combination of emulator-based testing, physical device testing, and performance monitoring provided an opportunity to evaluate the application beyond basic functional verification.
+
+<table>
+<tr>
+    <td align="center">
+      <img src="./screenshots/4%20alarms%20at%20once%20with%20developer%20usage%20stats%201.jpg" width="180">
+      <br>S22 Ultra – Developer Mode Testing Regular Usage
+    </td>
+    <td align="center">
+      <img src="./screenshots/4%20alarms%20at%20once%20with%20developer%20usage%20stats%20not%20actively%20running%20stats.jpg" width="180">
+      <br>S22 Ultra – Developer Mode Alarm Testing
+    </td>
+  
+    <td align="center">
+      <img src="./screenshots/s22%20u%20alarm%20message%20with%20interactable%20buttons.jpg" width="180">
+      <br>S22 Ultra – Developer Mode Alarm Testing
+    </td>
+
+    <td align="center">
+      <img src="./screenshots/alarm%20going%20off%20when%20app%20is%20not%20running%20in%20background.png" width="180">
+      <br>S22 Ultra – Developer Mode Alarm Testing
+    </td>
+  
+  </tr>
+</table>
 
 🔮 Potential Future Enhancements
 
